@@ -103,17 +103,10 @@ export default function Dashboard(props) {
   const demoWindow = window ? window() : undefined;
 
   useEffect(() => {
-    // if (successMessage) {
-    //   showAllertMessage('success', successMessage);
-    //   dispatch({ type: RESET_AUTH_STATE });
-    // }
-    // if (errorMessage) {
-    //   showAllertMessage('error', errorMessage);
-    //   dispatch({ type: RESET_AUTH_STATE });
-    // }
     if (loginSuccessMessage) {
-      showAllertMessage('success', successMessage);
+      showAllertMessage('success', loginSuccessMessage);
       dispatch({ type: RESET_AUTH_STATE });
+      navigate('/login')
     }
     if (loginErrorMessage) {
       showAllertMessage('error', errorMessage);

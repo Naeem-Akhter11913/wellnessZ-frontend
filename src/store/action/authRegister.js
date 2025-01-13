@@ -230,7 +230,6 @@ export const logoutUser = _ => {
                     successMessage: response.data.message
                 }
             })
-            //log-out-users
         } catch (error) {
             dispatch({
                 type: LOG_USER_FAILED,
