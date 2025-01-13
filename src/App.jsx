@@ -7,6 +7,7 @@ import Dashboard from './pages/dashboard/Dashboard';
 import Register from './pages/auth/Register';
 
 const App = () => {
+  
   return (
     <Box component={'div'}>
       <Router>

@@ -7,16 +7,14 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
   boxShadow: 24,
-  p: 4,
+  borderRadius:"20px"
 };
 const ShowTheImag = ({previewImage}) => {
   return (
-    <Box component={'div'} sx={style}>
-      <Box component={'img'} src={previewImage} height={300} width={300}/>
+    <Box component={'div'} sx={style} display={'flex'} justifyContent={'center'} alignItems={'center'} >
+      <Box component={'img'} src={previewImage} height={300} width={300} borderRadius={3}/>
     </Box>
   )
 }

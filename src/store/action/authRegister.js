@@ -7,6 +7,8 @@ import {
     DELETE_USER_SUCCESS,
     EDIT_USER_FAILED,
     EDIT_USER_SUCCESS,
+    GET_ALL_AUDIT_LOG_ERROR,
+    GET_ALL_AUDIT_LOG_SUCCESS,
     GET_ALL_USER_FAILED,
     GET_ALL_USER_SUCCESS,
     LOADIN_STATE,
@@ -31,7 +33,7 @@ export const createUserRegister = (credentials) => {
             dispatch({
                 type: USER_REGISTER_SUCCESS,
                 payload: {
-                    successMessage: response.data.messsage
+                    successMessage: response.data.message
                 }
             });
         } catch (error) {
@@ -50,6 +52,7 @@ export const loginUser = credentials => {
         dispatch({ type: LOADIN_STATE })
         try {
             const response = await authAPI.post('user/user-login', credentials)
+            localStorage.setItem("accessToken", response.data.accessToken)
             dispatch({
                 type: USER_LOGIN_SUCCESS,
                 payload: {
@@ -71,7 +74,7 @@ export const loginUser = credentials => {
 export const checkAuth = _ => {
     return async dispatch => {
         try {
-            const response = await authAPI.post('user/verify-token');
+            const response = await authAPI.post('user/verify-token',{});
             dispatch({
                 type: USER_LOGIN_AUTH_SUCCESS,
                 payload: {
@@ -80,16 +83,14 @@ export const checkAuth = _ => {
                 }
             });
         } catch (error) {
+            console.log(error)
             dispatch({
                 type: USER_LOGIN_AUTH_FAILED,
                 payload: {
                     errorMessage: error.response?.data?.message || error.message
                 }
             })
-            if (error.response?.data.redirect) {
-                window.location.href = error.response?.data.redirect;
-                return;
-            }
+
         }
     }
 }
@@ -97,7 +98,7 @@ export const checkAuth = _ => {
 export const getAllUser = ({ page, limit }) => {
     return async dispatch => {
         try {
-            let response = await authAPI.get(`user/get-users?page=${page}&limit=${limit}`);
+            let response = await authAPI.get(`user/get-all-employee?page=${page}&limit=${limit}`);
 
             dispatch({
                 type: GET_ALL_USER_SUCCESS,
@@ -107,44 +108,12 @@ export const getAllUser = ({ page, limit }) => {
                 }
             })
         } catch (error) {
-            console.log(error)
             dispatch({
                 type: GET_ALL_USER_FAILED,
                 payload: {
                     errorMessage: error.response?.data?.message || error.message
                 }
-            })
-            if (error.response?.data.redirect) {
-                window.location.href = error.response?.data.redirect;
-                return;
-            }
-        }
-    }
-}
-
-export const editeUser = (userid, userCredentials) => {
-    return async dispatch => {
-        dispatch({ type: LOADIN_STATE })
-        try {
-            const response = await authAPI.put(`user/edit-users?itemID=${userid}`, { ...userCredentials });
-
-            dispatch({
-                type: EDIT_USER_SUCCESS,
-                payload: {
-                    successMessage: response.data.message,
-                }
-            })
-        } catch (error) {
-            dispatch({
-                type: EDIT_USER_FAILED,
-                payload: {
-                    errorMessage: error.response?.data?.message || error.message
-                }
-            })
-            if (error.response?.data.redirect) {
-                window.location.href = error.response?.data.redirect;
-                return;
-            }
+            });
         }
     }
 }
@@ -163,12 +132,10 @@ export const deleteUser = userid => {
         } catch (error) {
             dispatch({
                 type: DELETE_USER_FAILED,
-                errorMessage: error.response?.data?.message || error.message
+                payload: {
+                    errorMessage: error.response?.data?.message || error.message
+                }
             });
-            if (error.response?.data.redirect) {
-                window.location.href = error.response?.data.redirect;
-                return;
-            }
         }
     }
 }
@@ -180,7 +147,7 @@ export const addEmployess = credentials => {
         try {
             const response = await authAPI.post(`user/add-employeee`, credentials, {
                 headers: {
-                    'Content-Type': 'multipart/form-data', // Set content-type to multipart/form-data for file uploads
+                    'Content-Type': 'multipart/form-data',
                 },
             });
 
@@ -197,21 +164,17 @@ export const addEmployess = credentials => {
                     errorMessage: error.response?.data?.message || error.message
                 }
             })
-            if (error.response?.data.redirect) {
-                window.location.href = error.response?.data.redirect;  // Perform the redirect here
-                return; 
-            }
         }
     }
 }
-export const editEmployess = (credentials,id) => {
+export const editEmployess = (credentials, id) => {
     return async dispatch => {
         dispatch({ type: LOADIN_STATE })
         try {
             const response = await authAPI.put(`user/edit-employee?id=${id}`, credentials, {
                 withCredentials: true,
                 headers: {
-                    'Content-Type': 'multipart/form-data', // Set content-type to multipart/form-data for file uploads
+                    'Content-Type': 'multipart/form-data',
                 },
             });
 
@@ -228,10 +191,30 @@ export const editEmployess = (credentials,id) => {
                     errorMessage: error.response?.data?.message || error.message
                 }
             })
-            if (error.response?.data.redirect) {
-                window.location.href = error.response?.data.redirect;  // Perform the redirect here
-                return; 
-            }
+        }
+    }
+}
+export const getAllAuditLog = _ => {
+    return async dispatch => {
+        dispatch({ type: LOADIN_STATE })
+        try {
+            const response = await authAPI.get(`user/get-all-log-audit`);
+
+            dispatch({
+                type: GET_ALL_AUDIT_LOG_SUCCESS,
+                payload: {
+                    successMessage: response.data.message,
+                    auditLog: response.data.data,
+                    totalDocuments: response.data.totalDocuments
+                }
+            })
+        } catch (error) {
+            dispatch({
+                type: GET_ALL_AUDIT_LOG_ERROR,
+                payload: {
+                    errorMessage: error.response?.data?.message || error.message
+                }
+            })
         }
     }
 }
@@ -240,7 +223,7 @@ export const logoutUser = _ => {
     return async dispatch => {
         try {
             const response = await authAPI.post(`user/log-out-users`);
-            window.location.href = 'http://localhost:5173/login'
+            localStorage.clear();
             dispatch({
                 type: LOG_USER_SUCCESS,
                 payload: {
@@ -253,10 +236,7 @@ export const logoutUser = _ => {
                 type: LOG_USER_FAILED,
                 errorMessage: error.response?.data?.message || error.message
             })
-            if (error.response?.data.redirect) {
-                window.location.href = error.response?.data.redirect;  // Perform the redirect here
-                return; 
-            }
         }
     }
 }
+

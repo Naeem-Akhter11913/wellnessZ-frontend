@@ -35,11 +35,7 @@ export const getCalenderCrendentials = userId => {
                 payload: {
                     errorMessage: error.response?.data?.message || error.message
                 }
-            })
-            if (error.response?.data.redirect) {
-                window.location.href = error.response?.data.redirect;  // Perform the redirect here
-                return; 
-            }
+            });
         }
     }
 }
@@ -60,11 +56,7 @@ export const setEventOnClander = credentials => {
                 payload: {
                     errorMessage: error.response?.data?.message || error.response?.data|| error.message
                 }
-            })
-            if (error.response?.data.redirect) {
-                window.location.href = error.response?.data.redirect;  // Perform the redirect here
-                return; 
-            }
+            });
         }
     }
 }
@@ -85,11 +77,7 @@ export const getAllMetaData = _ => {
                 payload: {
                     errorMessage: error.response?.data?.message || error.response?.data|| error.message
                 }
-            })
-            if (error.response?.data.redirect) {
-                window.location.href = error.response?.data.redirect;  // Perform the redirect here
-                return; 
-            }
+            });
         }
     }
 }

@@ -7,9 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Swal from 'sweetalert2'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import { GridToolbar } from '@mui/x-data-grid';
 import { checkAuth, deleteUser, getAllUser } from "../../../store/action/authRegister";
-import EditModal from "./EditModal";
 import { RESET_AUTH_STATE } from "../../../store/type/type";
 import { showAllertMessage } from "../../../utilities/toastifyAlert";
 import { useLocation, useNavigate } from "react-router";
@@ -33,6 +31,7 @@ const HomeDashboard = () => {
         loginErrorMessage,
         loading
     } = useSelector((state) => state.auth);
+    // console.log(userDetails)
     const {
         reminderMetaData,
         calenderCredentials,
@@ -140,6 +139,7 @@ const HomeDashboard = () => {
                 confirmButtonText: "Yes, delete it!"
             }).then((result) => {
                 if (result.isConfirmed) {
+                    console.log(deleteUserDetail._id)
                     dispatch(deleteUser(deleteUserDetail._id))
                 }
             });
@@ -194,11 +194,13 @@ const HomeDashboard = () => {
             field: "isActive",
             headerName: "Status",
             width: 130,
-            renderCell: (params) => (
-                <span style={{ color: params.value ? "green" : "red" }}>
-                    {params.value ? "Active" : "Inactive"}
-                </span>
-            ),
+            renderCell: (params) => {
+                return (
+                    <span style={{ color: params.row.status ? "green" : "red" }}>
+                        {params.row.status ? "Active" : "Inactive"}
+                    </span>
+                )
+            }
         },
         {
             field: "image",
@@ -222,7 +224,6 @@ const HomeDashboard = () => {
             width: 150,
             renderCell: (params) => (
                 <Box component={'div'}>
-                    {/* {userDetails.typeOfUser === 'admin'} */}
                     <Button
                         sx={{
                             color: 'green'
@@ -378,7 +379,6 @@ const HomeDashboard = () => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                {/* <EditModal userEditDetails={userEditDetails} handleClose={handleClose} setUserEditDetails={setUserEditDetails} /> */}
                 <EmployeeForm loading={loading} userEditDetails={userEditDetails} isEditEmployess={isEditEmployess} setUserEditDetails={setUserEditDetails} />
             </Modal>
             <Modal
@@ -395,7 +395,7 @@ const HomeDashboard = () => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <ShowTheImag previewImage={previewImage}/>
+                <ShowTheImag previewImage={previewImage} />
             </Modal>
         </div>
     );

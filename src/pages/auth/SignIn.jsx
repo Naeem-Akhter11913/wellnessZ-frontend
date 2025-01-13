@@ -11,6 +11,7 @@ import { showAllertMessage } from '../../utilities/toastifyAlert';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../../store/action/authRegister';
 import { RESET_AUTH_STATE } from '../../store/type/type';
+import axios from 'axios';
 
 
 
@@ -30,9 +31,10 @@ const roles = [
 ];
 
 const SignIn = () => {
-  const { errorMessage, successMessage, loading , isAuthenticated } = useSelector(state => state.auth);
+  const { errorMessage, successMessage, loading, isAuthenticated } = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
   const [loginCredentials, setLoginCredentials] = useState({
     email: '',
     password: '',
@@ -42,18 +44,30 @@ const SignIn = () => {
   const collectData = e => {
     const { value, name } = e.target;
     setLoginCredentials({ ...loginCredentials, [name]: value })
+    setErrors({ ...errors, [name]: "" });
   }
+
+  const validate = () => {
+    let validationErrors = {};
+    if (!loginCredentials.email) {
+      validationErrors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(loginCredentials.email)) {
+      validationErrors.email = "Enter a valid email.";
+    }
+    if (!loginCredentials.password) {
+      validationErrors.password = "Password is required.";
+    }
+    return validationErrors;
+  };
+
 
   const handleSignIn = e => {
     e.preventDefault();
-    const { email, password } = loginCredentials
 
-    if (!password) {
-
-      return showAllertMessage('error', 'Enter the password');
-    }
-    if (!email) {
-      return showAllertMessage('error', 'Enter the email');
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
     }
 
     dispatch(loginUser(loginCredentials))
@@ -69,16 +83,28 @@ const SignIn = () => {
       showAllertMessage('success', successMessage);
       dispatch({ type: RESET_AUTH_STATE });
     }
+  }, [errorMessage, successMessage, isAuthenticated]);
 
-    // if(isAuthenticated){
-    //   navigate('/');
-    // }else{
-    //   navigate('/login');
-    // }
 
-  }, [errorMessage, successMessage , isAuthenticated]);
 
-  
+  useEffect(() => {
+    const checkRefreshToken = async () => {
+      try {
+        const response = await axios.post('http://localhost:8080/api/1.0/user/verify-refresh-token', {}, { withCredentials: true });
+        if (response.data.success) {
+          navigate('/');
+        } else {
+          navigate('/login');
+        }
+      } catch (error) {
+        console.error('Error verifying refresh token:', error);
+        navigate('/login');
+      }
+    };
+
+    checkRefreshToken();
+  }, []);
+
   return (
     <Box
       component={'form'}
@@ -109,34 +135,40 @@ const SignIn = () => {
               }} > Click here.</Link></Typography>
         </Box>
         <TextField
-          required
-          type="email"
+          type="text"
           id="outlined-required"
           label="Enter email"
           name='email'
+          error={!!errors.email}
+          helperText={errors.email}
           onChange={collectData}
           slotProps={{
             input: {
               startAdornment: (
                 <InputAdornment position="start">
-                  <EmailIcon />
+                  <EmailIcon style={{
+                    color: !!errors.email && '#d32f2f'
+                  }} />
                 </InputAdornment>
               )
             }
           }}
         />
         <TextField
-          required
           id="outlined-required"
           label="Enter password"
           type='password'
           name='password'
+          error={!!errors.password}
+          helperText={errors.password}
           onChange={collectData}
           slotProps={{
             input: {
               startAdornment: (
                 <InputAdornment position="start">
-                  <PasswordIcon />
+                  <PasswordIcon style={{
+                    color: !!errors.password && '#d32f2f'
+                  }} />
                 </InputAdornment>
               )
             }

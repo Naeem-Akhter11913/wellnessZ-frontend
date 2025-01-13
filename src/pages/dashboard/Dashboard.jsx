@@ -6,6 +6,7 @@ import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { PageContainer } from '@toolpad/core/PageContainer';
 import EditRecordPage from './components/EditRecordPage';
+import DvrIcon from '@mui/icons-material/Dvr';
 import { useDispatch, useSelector } from 'react-redux';
 import HomeDashboard from './components/HomeDashboard';
 import Swal from 'sweetalert2'
@@ -14,12 +15,14 @@ import { logoutUser } from '../../store/action/authRegister';
 import { RESET_AUTH_STATE } from '../../store/type/type';
 import { showAllertMessage } from '../../utilities/toastifyAlert';
 import { useNavigate } from 'react-router';
+import LogAudit from '../../components/LogAudit';
 // import HomeDashboard from './HomeDashboard';
 
 
 // Route Mapping
 const ROUTES = {
   '/dashboard': HomeDashboard,
+  '/log-audit': LogAudit,
 };
 
 const NAVIGATION = [
@@ -32,6 +35,12 @@ const NAVIGATION = [
     segment: 'dashboard',
     title: 'Dashboard',
     icon: <DashboardIcon />,
+    visible: true, // Always visible
+  },
+  {
+    segment: 'log-audit',
+    title: 'Log Audit',
+    icon: <DvrIcon />,
     visible: true, // Always visible
   },
   

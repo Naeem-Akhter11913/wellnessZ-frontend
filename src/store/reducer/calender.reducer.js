@@ -69,6 +69,7 @@ export const calenderReducer = (state = initialStage, action) => {
             return {
                 ...initialStage,
                 users: state.users,
+                reminderMetaData: state.reminderMetaData,
             };
         default:
             return state;

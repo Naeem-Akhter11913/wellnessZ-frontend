@@ -16,13 +16,16 @@ import {
     LOG_USER_FAILED,
     LOG_USER_SUCCESS,
     ADD_EMPLOYEE_SUCCESS,
-    ADD_EMPLOYEE_ERROR
+    ADD_EMPLOYEE_ERROR,
+    GET_ALL_AUDIT_LOG_SUCCESS,
+    GET_ALL_AUDIT_LOG_ERROR
 } from "../type/type";
 
 
 const initialStage = {
     isSetup: true,
     users: [],
+    auditLog: [],
     userDetails: {},
     currentUser: {},
     successMessage: null,
@@ -31,7 +34,7 @@ const initialStage = {
     loginErrorMessage: null,
     loading: false,
     isAuthenticated: false,
-}
+} 
 
 export const authReducer = (state = initialStage, action) => {
     const { type, payload } = action;
@@ -138,6 +141,19 @@ export const authReducer = (state = initialStage, action) => {
             }
 
 
+        case GET_ALL_AUDIT_LOG_SUCCESS:
+            return {
+                ...state,
+                auditLog: payload.auditLog
+                // successMessage: payload.successMessage
+            }
+        case GET_ALL_AUDIT_LOG_ERROR:
+            return {
+                ...state,
+                errorMessage: payload.errorMessage
+            }
+
+
 
 
 
@@ -152,7 +168,8 @@ export const authReducer = (state = initialStage, action) => {
             return {
                 ...initialStage,
                 users: state.users,
-                userDetails: state.userDetails
+                userDetails: state.userDetails,
+                auditLog: state.auditLog
             };
         default:
             return state;

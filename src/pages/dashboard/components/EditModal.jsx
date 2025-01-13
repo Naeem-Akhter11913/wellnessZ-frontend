@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import CodeIcon from '@mui/icons-material/Code';
 import LoadingButton from "@mui/lab/LoadingButton";
 import InputAdornment from '@mui/material/InputAdornment';
-import { editeUser } from '../../../store/action/authRegister';
+// import { editeUser } from '../../../store/action/authRegister';
 import { RESET_AUTH_STATE } from '../../../store/type/type';
 import { showAllertMessage } from '../../../utilities/toastifyAlert';
 
@@ -56,7 +56,7 @@ const EditModal = ({ userEditDetails, handleClose, setUserEditDetails }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    dispatch(editeUser(userEditDetails._id, formData));
+    // dispatch(editeUser(userEditDetails._id, formData));
 
   };
 
