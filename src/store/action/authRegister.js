@@ -1,12 +1,9 @@
-import axios from "axios"
 import authAPI from "../authApi/authAxios"
 import {
     ADD_EMPLOYEE_ERROR,
     ADD_EMPLOYEE_SUCCESS,
     DELETE_USER_FAILED,
     DELETE_USER_SUCCESS,
-    EDIT_USER_FAILED,
-    EDIT_USER_SUCCESS,
     GET_ALL_AUDIT_LOG_ERROR,
     GET_ALL_AUDIT_LOG_SUCCESS,
     GET_ALL_USER_FAILED,

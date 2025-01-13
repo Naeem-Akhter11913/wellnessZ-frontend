@@ -90,7 +90,8 @@ const SignIn = () => {
   useEffect(() => {
     const checkRefreshToken = async () => {
       try {
-        const response = await axios.post('http://localhost:8080/api/1.0/user/verify-refresh-token', {}, { withCredentials: true });
+        const response = await axios.post('https://welness-z-server.vercel.app/api/1.0/user/verify-refresh-token', {}, { withCredentials: true });
+        // const response = await axios.post('http://localhost:8080/api/1.0/user/verify-refresh-token', {}, { withCredentials: true });
         if (response.data.success) {
           navigate('/');
         } else {
